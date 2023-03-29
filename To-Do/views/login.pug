@@ -1,0 +1,35 @@
+extends index 
+
+block login
+    div.mx-auto.w-25.mt-5
+        h1 Ingresar
+        br
+        form(method="post" action="/auth/login")
+            div.mb-4
+                label(for="loginName") Email or username
+                input.form-control#loginName( type="text" name="username" required)
+            div.mb-4
+                label(for="loginPassword") Password 
+                input.form-control#loginPassword(type="password" name="password" required)
+            input.btn.btn-success(style="width:100%",type="submit", value="Loguearse")
+              
+
+        div.text-center
+            button.btn.btn-danger(style="width:100%",type='button' data-bs-toggle='modal' data-bs-target='#modalRegistrate') Registrate
+            div.modal.fade(id="modalRegistrate",tabindex='-1' aria-labelledby='modalRegistrate', aria-hidden='true')
+                .modal-dialog.modal-dialog-centered
+                    .modal-content
+                        .modal-header
+                            h1.modal-title.fs-5(id="modalRegistrate") Registrar
+                            button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+                        .modal-body
+                            form(method="post" action="/auth/signup")
+                                div.form-outline.mb-2
+                                    label.form-label Usuario:
+                                    input#usuario.form-control(type="text" name="username" required)                       
+                                div.form-outline.mb-2
+                                    label.form-label Contraseña:
+                                    input#pass.form-control(type="password" name="password" required)
+                                input.btn.btn-success(style="width:100%",type="submit", value="Registrarse") 
+
+                

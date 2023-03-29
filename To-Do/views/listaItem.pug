@@ -1,0 +1,91 @@
+extends index
+
+block script
+    script.
+        $(document).ready(function () {
+            $(`#itelis`).DataTable();
+        })
+        
+block itelis 
+    button.btn.btn-success(style="width:100%" type='button' data-bs-toggle='modal' data-bs-target='#modalAddList') Agregar items a una lista
+    #modalAddList.modal.fade(tabindex='-1' aria-labelledby='modalAddList' aria-hidden='true')
+        .modal-dialog.modal-dialog-centered
+            .modal-content
+                .modal-header
+                    h1#modalAddList.modal-title.fs-5 Agregar Item
+                    button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+                .modal-body
+                    form(method="post" action="../listaItem/agregar")
+                        div.form-outline.mb-2
+                            label.form-label Lista:
+                            select.form-select.form-select-m(name="id_lista")
+                                each lista in listas 
+                                    option(value=lista.id_lista) #{lista.titulo}
+                        div.form-outline.mb-2
+                            label.form-label Item:
+                            select.form-select.form-select-m(name="id_item")
+                                each item in items 
+                                    option(value=item.id_item) #{item.titulo}
+                        input.btn.btn-primary(style="width:100%",type="submit", value="Agregar")     
+    table.table#itelis
+        thead    
+            tr  
+                th Lista
+                th Items
+        tbody
+            each lista in llenas
+                tr
+                    td(style="width:20%")
+                        h4.text-center 
+                            |#{lista.titulo}    
+                    td
+                        table.table#items 
+                            thead 
+                                tr 
+                                    th Numero 
+                                    th Titulo 
+                                    th Estado
+                                    th Fecha Limite
+                                    th Prioridad
+                                    th Borrar Item
+                            tbody 
+                                each listadas in enlistadas 
+                                    tr
+                                        each item in items 
+                                            if(listadas.id_lista == lista.id_lista && listadas.id_item == item.id_item)
+                                                td(style="width: 15%") 
+                                                    strong #{item.id_item}
+                                            if(listadas.id_lista == lista.id_lista && listadas.id_item == item.id_item)
+                                                td(style="width: 15%") 
+                                                    strong #{item.titulo}
+                                            if(listadas.id_lista == lista.id_lista && listadas.id_item == item.id_item)
+                                                td(style="width: 15%") 
+                                                    strong #{item.estado}
+                                            if(listadas.id_lista == lista.id_lista && listadas.id_item == item.id_item)
+                                                td(style="width: 15%") 
+                                                    strong #{item.fecha_limite}
+                                            if(listadas.id_lista == lista.id_lista && listadas.id_item == item.id_item)
+                                                td(style="width: 15%") 
+                                                    strong #{item.prioridad}
+                                            if(listadas.id_lista == lista.id_lista && listadas.id_item == item.id_item)
+                                                td 
+                                                    button.mb-3.btn.btn-danger(style="width:100%" type='button' data-bs-toggle='modal' data-bs-target='#modalListDele'+item.id_item) Borrar Item de la lista
+                                                    .modal.fade(id="modalListDele"+item.id_item ,tabindex='-1' aria-labelledby='modalListDele'+item.id_item aria-hidden='true')
+                                                        .modal-dialog.modal-dialog-centered
+                                                            .modal-content
+                                                                .modal-header
+                                                                    h1#modalListDele.modal-title.fs-5 
+                                                                        |Borrar Item de la Lista
+                                                                    button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+                                                                .modal-body
+                                                                    form(method="post" action="../listaItem/borrar?_method=DELETE")
+                                                                        div.form-outline.mb-2
+                                                                            label.form-label Lista:
+                                                                            input#idLista.form-control(type="text" name="id_lista" value=lista.id_lista readonly)
+                                                                            br
+                                                                            input#idLista.form-control(type="text" value=lista.titulo readonly)
+                                                                        div.form-outline.mb-2
+                                                                            label.form-label Item:
+                                                                            input#idLista.form-control(type="text" name="id_item" value=item.id_item readonly)
+                                                                        input.btn.btn-danger(style="width:100%",type="submit", value="Borrar")
+    

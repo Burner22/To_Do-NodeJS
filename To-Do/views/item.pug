@@ -1,0 +1,132 @@
+extends index
+
+block script
+    script.
+        $(document).ready(function () {
+            $(`#mostrar`).DataTable();
+        })
+
+block mostrar
+    button.btn.btn-success(style="width:100%" type='button' data-bs-toggle='modal' data-bs-target='#modalAdd') Agregar
+    #modalAdd.modal.fade(tabindex='-1' aria-labelledby='modalAdd' aria-hidden='true')
+        .modal-dialog.modal-dialog-centered
+            .modal-content
+                .modal-header
+                    h1#modalAdd.modal-title.fs-5 Agregar Item
+                    button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+                .modal-body
+                    form(method="post" action="../item/agregar")
+                        div.form-outline.mb-2
+                            label.form-label Titulo:
+                            input#registerTitulo.form-control(type="text" name="titulo" value=item ? item.titulo : "" required)                       
+                        div.form-outline.mb-2
+                            label.form-label Fecha Resolucion:
+                            input#registerFecha2.form-control(type="date" name="fecharesolucion" value=item ? item.fecha_resolucion : "")
+                        div.form-outline.mb-2
+                            label.form-label Descripcion:
+                            input#registerDescripcion.form-control(type="text" name="descripcion" value=item ? item.descripcion : "" required)
+                        div.form-outline.mb-2
+                            label.form-label Prioridad:
+                            select.form-select.form-select-m(name="prioridad")
+                                option(value="Alta") Alta
+                                option(value="Media") Media
+                                option(value="Baja") Baja
+                        div.form-outline.mb-2
+                            label.form-label Fecha Limite:
+                            input#registerfecha3.form-control(type="date" name="fechalimite" value=item ? item.fecha_limite : "")
+                        div.form-outline.mb-2
+                            label.form-label Estado:
+                            select.form-select.form-select-m(name="estado")
+                                option(value="Sin resolver") Sin resolver
+                                option(value="Resolviendo") Resolviendo
+                                option(value="Resuelta") Resuelta
+                        input.btn.btn-success(style="width:100%",type="submit", value="Agregar")      
+    table.table#mostrar(style="width:100%")
+        thead    
+            tr 
+                th ID 
+                th titulo 
+                th fecha_creacion
+                th fecha_resolucion
+                th descripcion
+                th prioridad
+                th fecha_limite 
+                th estado  
+                th Actualizar 
+                th Borrar  
+        tbody
+            -let i = 0
+            each item in items         
+                tr 
+                    td= item.id_item
+                    td= item.titulo
+                    td= item.fecha_creacion
+                    td= item.fecha_resolucion != "0000-00-00" ? item.fecha_resolucion : "Pendiente"
+                    td= item.descripcion
+                    td= item.prioridad
+                    td= item.fecha_limite
+                    td= item.estado
+                    td  
+                        button.btn.btn-primary(type='button' data-bs-toggle='modal' data-bs-target='#modalUpdate'+item.id_item ) Actualizar
+                        div.modal.fade(id="modalUpdate"+item.id_item ,tabindex='-1' aria-labelledby='modalUpdate'+item.id_item aria-hidden='true')
+                            .modal-dialog.modal-dialog-centered
+                                .modal-content
+                                    .modal-header
+                                        h1.modal-title.fs-5(id="modalUpdate"+item.id_item ) Actualizar Item
+                                        button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+                                    .modal-body
+                                        form(method="post" action="../item/actualizar?_method=PUT")    
+                                            div.form-outline.mb-2
+                                                label.form-label ID:
+                                                input#registerId.form-control(type="text" name="id" value=item ? item.id_item : "" readonly)
+                                            div.form-outline.mb-2
+                                                label.form-label Titulo:
+                                                input#registerTitulo.form-control(type="text" name="titulo" value=item ? item.titulo : "" required)
+                                            div.form-outline.mb-2
+                                                label.form-label Fecha Creacion:
+                                                input#registerFecha2.form-control(type="date" name="fechacreacion" value=item ? item.fecha_creacion : "")
+                                            div.form-outline.mb-2
+                                                label.form-label Fecha Resolucion:
+                                                input#registerFecha2.form-control(type="date" name="fecharesolucion" value=item ? item.fecha_resolucion : "" )
+                                            div.form-outline.mb-2
+                                                label.form-label Descripcion:
+                                                input#registerDescripcion.form-control(type="text" name="descripcion" value=item ? item.descripcion : "" required)
+                                            div.form-outline.mb-2
+                                                label.form-label Prioridad:
+                                                select.form-select.form-select-m(name="prioridad")
+                                                    option(value="Alta") Alta
+                                                    option(value="Media") Media
+                                                    option(value="Baja") Baja
+                                            div.form-outline.mb-2
+                                                label.form-label Fecha Limite:
+                                                input#registerfecha3.form-control(type="date" name="fechalimite" value=item ? item.fecha_limite : "")
+                                            div.form-outline.mb-2
+                                                label.form-label Estado:
+                                                select.form-select.form-select-m(name="estado")
+                                                    option(value="Sin resolver") Sin resolver
+                                                    option(value="Resolviendo") Resolviendo
+                                                    option(value="Resuelta") Resuelta                          
+                                            input.btn.btn-primary(style="width:100%",type="submit", value="Actualizar")
+                    td
+                        button.btn.btn-danger(type='button' data-bs-toggle='modal' data-bs-target='#modalDelete'+item.id_item) Borrar
+                        div.modal.fade(id="modalDelete"+item.id_item ,tabindex='-1' aria-labelledby='modalDelete'+item.id_item, aria-hidden='true')
+                            .modal-dialog.modal-dialog-centered
+                                .modal-content
+                                    .modal-header
+                                        h1.modal-title.fs-5(id="modalDelete"+item.id_item ) Borrar Item 
+                                        button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+                                    .modal-body
+                                        if foraneo[i] == 1
+                                            |Usted tiene el siguiente item en una lista, desea borrarlo de todas maneras?
+                                        else 
+                                            |Si usted borra este item no podra recuperarlo, desea borrarlo de todas maneras?
+                                        -i += 1
+                                        form(method="post" action="../item/borrar?_method=DELETE")
+                                            input.form-control(style="visibility: hidden" type="text" name="id" value=item.id_item readonly)
+                                            input.btn.btn-danger(style="width:100%", type="submit", value="Borrar")                   
+                                        
+        
+        
+    
+                    
+                

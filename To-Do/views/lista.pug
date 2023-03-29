@@ -1,0 +1,93 @@
+extends index
+
+block script
+    script.
+        $(document).ready(function () {
+            $(`#lista`).DataTable();
+        })
+
+block lista
+    button.btn.btn-success(style="width:100%" type='button' data-bs-toggle='modal' data-bs-target='#modalAdd') Agregar
+    #modalAdd.modal.fade(tabindex='-1' aria-labelledby='modalAdd' aria-hidden='true')
+        .modal-dialog.modal-dialog-centered
+            .modal-content
+                .modal-header
+                    h1#modalAdd.modal-title.fs-5 Agregar Lista
+                    button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+                .modal-body
+                    form(method="post" action="../lista/agregar")
+                        div.form-outline.mb-2
+                            label.form-label Titulo:
+                            input#registerTitulo.form-control(type="text" name="titulo" value=lista ? lista.titulo : "" required)                       
+                        div.form-outline.mb-2
+                            label.form-label Fecha Resolucion:
+                            input#registerFecha2.form-control(type="date" name="fecharesolucion" value=lista ? lista.fecha_resolucion : "")
+                        div.form-outline.mb-2
+                            label.form-label Estado:
+                            select.form-select.form-select-m(name="estado")
+                                option(value="Sin resolver") Sin resolver
+                                option(value="Resuelta") Resuelta
+                        input.btn.btn-success(style="width:100%",type="submit", value="Agregar")      
+    table.table#lista(style="width:100%")
+        thead    
+            tr 
+                th ID 
+                th titulo 
+                th fecha_creacion
+                th fecha_resolucion
+                th estado  
+                th Actualizar 
+                th Borrar 
+        tbody
+            -let i = 0
+            each lista in listas         
+                tr 
+                    td= lista.id_lista
+                    td= lista.titulo
+                    td= lista.fecha_creacion
+                    td= lista.fecha_resolucion != null ? lista.fecha_resolucion : "Pendiente"
+                    td= lista.estado
+                    td  
+                        button.btn.btn-primary(type='button' data-bs-toggle='modal' data-bs-target='#modalUpdate'+lista.id_lista ) Actualizar
+                        div.modal.fade(id="modalUpdate"+lista.id_lista ,tabindex='-1' aria-labelledby='modalUpdate'+lista.id_lista aria-hidden='true')
+                            .modal-dialog.modal-dialog-centered
+                                .modal-content
+                                    .modal-header
+                                        h1.modal-title.fs-5(id="modalUpdate"+lista.id_lista ) Actualizar Item
+                                        button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+                                    .modal-body
+                                        form(method="post" action="../lista/actualizar?_method=PUT")    
+                                            div.form-outline.mb-2
+                                                label.form-label ID:
+                                                input#registerId.form-control(type="text" name="id" value=lista ? lista.id_lista : "" readonly)
+                                            div.form-outline.mb-2
+                                                label.form-label Titulo:
+                                                input#registerTitulo.form-control(type="text" name="titulo" value=lista ? lista.titulo : "" required)
+                                            div.form-outline.mb-2
+                                                label.form-label Fecha Resolucion:
+                                                input#registerFecha2.form-control(type="date" name="fecharesolucion" value=lista.fecha_resolucion )
+                                            div.form-outline.mb-2
+                                                label.form-label Estado:
+                                                select.form-select.form-select-m(name="estado")
+                                                    option(value="Sin resolver") Sin resolver
+                                                    option(value="Resuelta") Resuelta                          
+                                            input.btn.btn-primary(style="width:100%",type="submit", value="Actualizar")
+                    td 
+                        button.btn.btn-danger(type='button' data-bs-toggle='modal' data-bs-target='#modalDelete'+lista.id_lista) Borrar
+                        div.modal.fade(id="modalDelete"+lista.id_lista ,tabindex='-1' aria-labelledby='modalDelete'+lista.id_lista, aria-hidden='true')
+                            .modal-dialog.modal-dialog-centered
+                                .modal-content
+                                    .modal-header
+                                        h1.modal-title.fs-5(id="modalDelete"+lista.id_lista ) Borrar Item 
+                                        button.btn-close(type='button' data-bs-dismiss='modal' aria-label='Close')
+                                    .modal-body
+                                        if foraneo[i] == 1
+                                            |Usted tiene items en la lista no puede eliminarla #{i}
+                                            br
+                                        else 
+                                            |Si usted borra esta lista no podra recuperarlo, desea borrarlo de todas maneras?
+                                            form(method="post" action="../lista/borrar?_method=DELETE")
+                                                input.form-control(style="visibility: hidden" type="text" name="id" value=lista.id_lista readonly)
+                                                input.btn.btn-danger(style="width:100%", type="submit", value="Borrar")
+                                        -i += 1
+    
